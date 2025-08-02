@@ -136,7 +136,7 @@ export async function logRequest(request: HonoRequest) {
     }
 
     // Ligne de séparation pour délimiter les requêtes
-    console.log(kleur.gray('─'.repeat(80)));
+    console.log(kleur.gray('─'.repeat(process.stdout.columns)));
 }
 
 export function logResponse(status: number, result?: unknown) {
@@ -145,13 +145,18 @@ export function logResponse(status: number, result?: unknown) {
         status >= 400 ? kleur.bgRed().black(' RESPONSE ') : kleur.bgGreen().black(' RESPONSE ');
 
     const time = kleur.gray(`[${new Date().toISOString()}]`);
+    console.log(kleur.gray('─'.repeat(process.stdout.columns)));
     console.log(`${time} ${statusLabel} ${statusColor(status.toString())}\n`);
 
-    if (result !== undefined) {
-        console.log(kleur.gray('→ Data:'));
+    if (result !== undefined && status <= 399) {
+        console.log(kleur.gray('→ Response data:'));
         console.log(kleur.white().italic(JSON.stringify(result, null, 2)));
-        console.log();
+    } else if (result !== undefined && status >= 400) {
+        console.log(kleur.red('→ Response data:'));
+        console.log(kleur.red().italic(JSON.stringify(result, null, 2)));
     }
+
+    console.log(kleur.gray('─'.repeat(process.stdout.columns)));
 }
 
 // Personalized color in function of HTTP code
