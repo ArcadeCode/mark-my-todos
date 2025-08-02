@@ -18,3 +18,10 @@ export class TodoParseError extends Error {
         this.name = 'TodoParseError';
     }
 }
+
+export class InvalidIdentifier extends Error {
+    constructor(public reason: string) {
+        super(`Todo class parsing error: ${reason}`);
+        this.name = 'InvalidIdentifier';
+    }
+}

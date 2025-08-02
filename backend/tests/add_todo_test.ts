@@ -1,6 +1,7 @@
 import { describe, test, expect, beforeEach, afterEach, afterAll } from 'bun:test';
-import { Todo } from '../Todo';
-import { readTodos, writeTodos } from '../services/todo.service';
+import { Todo } from '../../shared/interfaces/Todo';
+import { readTodos } from '../services/todo.read.service';
+import { writeTodos } from '../services/todo.write.service';
 import { TEST_DATA_PATH, BASE_URL, mockTodos, newTodoData } from './utils';
 
 describe('Todo API Tests for `api/todos/add`', () => {

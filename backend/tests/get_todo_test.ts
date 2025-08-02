@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach, afterEach, afterAll } from 'bun:test';
-import { Todo } from '../Todo';
-import { writeTodos } from '../services/todo.service';
+import { Todo } from '../../shared/interfaces/Todo';
+import { writeTodos } from '../services/todo.write.service';
 import { TEST_DATA_PATH, BASE_URL, mockTodos } from './utils';
 
 describe('Todo API Tests for `api/todos/get`', () => {
@@ -65,7 +65,7 @@ describe('Todo API Tests for `api/todos/get`', () => {
             const response = await fetch(
                 `${BASE_URL}/api/todos/get?path='./an/improbable/path/todo.json'`,
             );
-            expect(response.status).toBe(405);
+            expect(response.status).toBe(404);
         });
     });
 });
