@@ -276,20 +276,22 @@ export class Todo {
     }
 
     static fromJSON(json: unknown): Todo {
+        // Check that the input is an object (and not null)
         if (typeof json !== 'object' || json === null) {
             logger.error('Invalid input: not an object');
             throw new Error('Invalid input: not an object');
         }
 
-        // Vérification contre la pollution de prototype
+        // Prevent prototype pollution by ensuring the constructor is not overridden
         if (json.constructor !== Object && json.constructor !== undefined) {
             logger.error('Invalid input: suspicious object constructor');
             throw new Error('Invalid input: suspicious object constructor');
         }
 
+        // Cast the input to a generic object with unknown values
         const obj = json as Record<string, unknown>;
 
-        // Vérification des propriétés dangereuses
+        // Check for prototype pollution attack vectors
         const dangerousProps = ['__proto__', 'constructor', 'prototype'];
         for (const prop of dangerousProps) {
             if (prop in obj) {
@@ -298,26 +300,28 @@ export class Todo {
             }
         }
 
-        // Limite le nombre de propriétés pour éviter les attaques DoS
+        // Limit the number of properties to avoid potential DoS attacks
         if (Object.keys(obj).length > 20) {
             logger.error('Too many properties in input object');
             throw new Error('Too many properties in input object');
         }
 
         try {
+            // Construct a new Todo object from the sanitized input
             return new Todo({
-                id: obj.id as string | undefined,
-                title: obj.title as string,
-                description: obj.description as string,
-                project: obj.project as string,
-                tags: obj.tags as string[],
-                priority: obj.priority as number,
-                due_date: obj.due_date as string | null,
-                status: obj.status as TodoStatus,
-                created_at: obj.created_at as string | undefined,
-                updated_at: obj.updated_at as string | undefined,
+                id: obj.id as string | undefined, // Optional field
+                title: obj.title as string, // Required
+                description: obj.description as string, // Required
+                project: obj.project as string, // Required
+                tags: obj.tags as string[], // Array of strings
+                priority: obj.priority as number, // Integer or float
+                due_date: obj.due_date as string | null, // Nullable date
+                status: obj.status as TodoStatus, // Enum or string representation
+                created_at: obj.created_at as string | undefined, // Optional date string
+                updated_at: obj.updated_at as string | undefined, // Optional date string
             });
         } catch (error) {
+            // Log and rethrow the error if Todo creation fails
             logger.error(
                 `Failed to create Todo from JSON: ${error instanceof Error ? error.message : String(error)}`,
             );

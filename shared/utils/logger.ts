@@ -1,3 +1,4 @@
+import { HonoRequest } from 'hono';
 import kleur from 'kleur';
 
 type LogLevel = 'INFO' | 'WARN' | 'ERROR' | 'DEBUG';
@@ -45,16 +46,97 @@ export const logger = {
         console.debug(formatMessage('DEBUG', msg, context, data)),
 };
 
-export function logRequest(method: string, path: string, body?: unknown) {
-    const time = kleur.gray(`[${new Date().toISOString()}]`);
-    const methodColor = kleur.bold().cyan(method.padEnd(6));
-    const pathColor = kleur.white(path);
+export async function logRequest(request: HonoRequest) {
+    const timestamp = new Date();
+    const time = kleur.gray(`[${timestamp.toISOString()}]`);
+    const methodColor = kleur.bold().cyan(request.method.padEnd(6));
+    const pathColor = kleur.white(request.url);
+
+    // Header principal
     console.log(`${time} ${kleur.bgCyan().black(' REQUEST ')} ${methodColor} ${pathColor}`);
 
-    if (body !== undefined) {
-        console.log(kleur.gray('→ Body:'));
-        console.log(kleur.white().italic(JSON.stringify(body, null, 2)));
+    // IP et User-Agent si disponibles
+    const details: string[] = [];
+    const ip = request.header('x-forwarded-for') || request.header('x-real-ip') || 'unknown';
+    const userAgent = request.header('user-agent');
+
+    if (ip && ip !== 'unknown') details.push(kleur.yellow(`IP: ${ip}`));
+    if (userAgent) {
+        details.push(
+            kleur.yellow(`UA: ${userAgent.substring(0, 50)}${userAgent.length > 50 ? '...' : ''}`),
+        );
     }
+
+    if (details.length > 0) {
+        console.log(`${kleur.gray('  ├─')} ${details.join(kleur.gray(' | '))}`);
+    }
+
+    // Query parameters si présents
+    const queryParams = request.queries();
+    if (queryParams && Object.keys(queryParams).length > 0) {
+        console.log(
+            `${kleur.gray('  ├─')} ${kleur.blue('Query:')} ${kleur.white().italic(JSON.stringify(queryParams))}`,
+        );
+    }
+
+    // Headers si présents
+    const headers = request.header();
+    if (headers && Object.keys(headers).length > 0) {
+        console.log(`${kleur.gray('  ├─')} ${kleur.magenta('Headers:')}`);
+        Object.entries(headers).forEach(([key, value], index, array) => {
+            const isLast = index === array.length - 1;
+            const prefix = isLast ? '  └─' : '  ├─';
+            console.log(
+                `${kleur.gray(prefix)}   ${kleur.dim(key)}: ${kleur.white().italic(value)}`,
+            );
+        });
+    }
+
+    // Body si présent (pour les méthodes POST, PUT, PATCH)
+    if (['POST', 'PUT', 'PATCH'].includes(request.method)) {
+        const hasOtherData =
+            Object.keys(queryParams || {}).length > 0 ||
+            Object.keys(headers || {}).length > 0 ||
+            details.length > 0;
+        const prefix = hasOtherData ? '  └─' : '  ├─';
+
+        try {
+            const contentType = request.header('content-type');
+            let body: any;
+
+            if (contentType?.includes('application/json')) {
+                body = await request.json();
+            } else if (contentType?.includes('application/x-www-form-urlencoded')) {
+                body = await request.parseBody();
+            } else if (contentType?.includes('text/')) {
+                body = await request.text();
+            } else {
+                body = '[Binary data]';
+            }
+
+            if (body !== undefined && body !== '[Binary data]') {
+                console.log(`${kleur.gray(prefix)} ${kleur.green('Body:')}`);
+                const bodyStr = typeof body === 'string' ? body : JSON.stringify(body, null, 2);
+
+                // Indenter le body pour une meilleure lisibilité
+                const indentedBody = bodyStr
+                    .split('\n')
+                    .map((line) => `    ${line}`)
+                    .join('\n');
+                console.log(kleur.white().italic(indentedBody));
+            } else if (body === '[Binary data]') {
+                console.log(
+                    `${kleur.gray(prefix)} ${kleur.green('Body:')} ${kleur.dim('[Binary data]')}`,
+                );
+            }
+        } catch (error) {
+            console.log(`${kleur.gray(prefix)} ${kleur.green('Body:')}`);
+            console.log(kleur.red(`    Erreur lors de la lecture du body: ${error}`));
+        }
+    }
+
+    // Ligne de séparation pour délimiter les requêtes
+    console.log(kleur.gray('─'.repeat(80)));
 }
 
 export function logResponse(status: number, result?: unknown) {
