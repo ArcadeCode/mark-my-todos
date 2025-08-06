@@ -34,8 +34,8 @@ export class Todo {
     private static readonly MAX_PROJECT_LENGTH = 100;
     private static readonly MAX_TAG_LENGTH = 50;
     private static readonly MAX_TAGS_COUNT = 20;
-    private static readonly MIN_PRIORITY = 1;
-    private static readonly MAX_PRIORITY = 5;
+    private static readonly MIN_PRIORITY = 0;
+    private static readonly MAX_PRIORITY = 10;
 
     constructor(data: TodoConstructorData) {
         // Validation et nettoyage des données
@@ -209,7 +209,9 @@ export class Todo {
     }
 
     private validateDueDate(due_date: unknown): string | null {
-        if (due_date === null) return null;
+        if (due_date === null || due_date === 'null') {
+            return null;
+        }
 
         if (typeof due_date !== 'string') {
             logger.error('Due date must be a string or null');

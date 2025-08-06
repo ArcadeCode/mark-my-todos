@@ -3,6 +3,18 @@ import kleur from 'kleur';
 
 type LogLevel = 'INFO' | 'WARN' | 'ERROR' | 'DEBUG';
 
+export function listAllProps(obj: any): string[] {
+    const props = new Set<string>();
+
+    let current = obj;
+    while (current) {
+        Object.getOwnPropertyNames(current).forEach((p) => props.add(p));
+        current = Object.getPrototypeOf(current);
+    }
+
+    return Array.from(props);
+}
+
 function formatMessage(level: LogLevel, message: string, context?: string, data?: unknown): string {
     const time = new Date().toISOString();
     let prefix = `[${time}] [${level}]`;
