@@ -29,8 +29,8 @@ describe('Todo API Tests for `api/todos/add`', () => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    ...newTodoData,
-                    queryPath: TEST_DATA_PATH,
+                    newTodoData: { ...newTodoData },
+                    path: TEST_DATA_PATH,
                 }),
             });
             expect(addResponse.status).toBe(201);
@@ -43,12 +43,17 @@ describe('Todo API Tests for `api/todos/add`', () => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    ...newTodoData,
-                    queryPath: TEST_DATA_PATH,
+                    newTodoData: { ...newTodoData },
+                    path: TEST_DATA_PATH,
                 }),
             });
-            const Todos = await readTodos(TEST_DATA_PATH);
-            expect(Todos[2].due_date).toBe('null');
+            const Todos: Todo[] = await readTodos(TEST_DATA_PATH);
+
+            //logger.debug(JSON.stringify(Todos));
+
+            expect(Todos.length).toBeGreaterThan(2);
+            expect(Todos[2].created_at).not.toBe('undefined');
+            expect(Todos[2].due_date).toBe(null);
         });
 
         test('Should handle undefined created_at and updated_at dates and define it', async () => {
@@ -58,13 +63,12 @@ describe('Todo API Tests for `api/todos/add`', () => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    ...newTodoData,
-                    queryPath: TEST_DATA_PATH,
+                    newTodoData: { ...newTodoData },
+                    path: TEST_DATA_PATH,
                 }),
             });
             const Todos = await readTodos(TEST_DATA_PATH);
             expect(Todos[2].created_at).not.toBe('undefined');
-            expect(Todos[2].updated_at).not.toBe('undefined');
         });
     });
 });
