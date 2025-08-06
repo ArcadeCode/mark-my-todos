@@ -1,33 +1,42 @@
-# mark-my-todos
+# Mark-my-todos
+Custom Todo list manager using local serveur.
 
-This template should help get you started developing with Vue 3 in Vite.
+**Mark-my-todos** is designed for users who prefer a single-page todo list. I personally used a ``todo.md`` file for all my work-related tasks, but it eventually became unmanageable. So I switched to a custom solution: a ``todo.json`` file that stores all todo elements, paired with a frontend built using Vue.js + TypeScript, and Bun as the runtime.
 
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
+## Features
+- Single-page interface using [Vue.js](https://vuejs.org/).
+- ~~Searching motor with tag support~~ (*planned feature*).
+- Multi-level organization: priorities, project categories, etc.
+- Fully local and self-hosted.
 
 ## Project Setup
+First, install [bun](https://bun.sh/) if you haven't already.
 
+Then clone the repository and install dependencies:
 ```sh
+git clone https://github.com/ArcadeCode/mark-my-todos.git
+cd ./mark-my-todos/
 bun install
 ```
 
-### Compile and Hot-Reload for Development
-
+### Run in Development Mode (with Hot Reload)
 ```sh
 bun dev
 ```
+> This will launch two servers:
+> - Backend (API): <http://localhost:3000>
+> - Frontend (UI): <http://localhost:5173>
+> You can also start only one of them with ``bun frontend`` or ``bun backend``.
 
-### Type-Check, Compile and Minify for Production
-
+### Build for production
+There are two independent builds, because Vite (the frontend bundler) cannot be minified as a standalone executable:
 ```sh
-bun run build
+bun run build         # Build the backend
+bun run vite build    # Build the frontend
 ```
+
+## Roadmap
+In future versions this stuff will be added :
+- [ ] Custom `build.sh` script to compile both backend and frontend and produce a unified executable.
+- [ ] Search engine (using [fuse.js](https://www.fusejs.io/))
+- [ ] Project tags custom database (to add more informations about your projects into the app)

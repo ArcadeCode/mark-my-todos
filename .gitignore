@@ -16,6 +16,8 @@ coverage
 
 /cypress/videos/
 /cypress/screenshots/
+test_todo.json
+todo.json
 
 # Editor directories and files
 .vscode/*
