@@ -10,13 +10,13 @@ export function resolvePath(custom?: string) {
 
 export function logSelectedPath(source: string, path?: string) {
     if (typeof path == undefined) {
-        logger.info(
+        logger.debug(
             `Path not selected, fallback on default path : ${DEFAULT_PATH}`,
             'readTodos',
             path,
         );
     } else {
-        logger.info(`Custom path selected : ${path}`, 'readTodos', path);
+        logger.debug(`Custom path selected : ${path}`, 'readTodos', path);
     }
 }
 

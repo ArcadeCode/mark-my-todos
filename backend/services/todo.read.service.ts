@@ -35,6 +35,7 @@ export async function readTodos(path?: string): Promise<Todo[]> {
     logSelectedPath('readTodos', path);
     const finalPath = resolvePath(path);
     const file = Bun.file(finalPath);
+    logger.debug(`Loaded ${finalPath} into memory`, 'readTodos');
 
     if (!(await file.exists())) {
         logger.warn(`File not found — returning an error`, 'readTodos', finalPath);
@@ -42,6 +43,7 @@ export async function readTodos(path?: string): Promise<Todo[]> {
     }
 
     const raw = await file.json(); // type: unknown
+    logger.debug(`Loaded ${finalPath} content into memory as raw JSON element`, 'readTodos');
     if (!Array.isArray(raw)) {
         logger.error('Invalid JSON: expected an array', 'readTodos', raw);
         throw new JsonParseError(`Expected an array, found a ${raw}`);
@@ -52,6 +54,7 @@ export async function readTodos(path?: string): Promise<Todo[]> {
     // We sanitize each object to remove these inherited properties by creating
     // a new object without prototype and copying only safe own properties.
     const sanitized = raw.map((obj) => sanitize(obj));
+    logger.debug(`Sanitized all objects from raw without dangerous property`, 'readTodos');
 
     // At this point, the original array still has prototypes, but
     // each element in 'sanitized' is a prototype-free plain object.
@@ -59,5 +62,10 @@ export async function readTodos(path?: string): Promise<Todo[]> {
     //logger.debug(`Sanitized object properties: ${listAllProps(sanitized).join(', ')}`);
 
     // Convert sanitized plain objects into Todo instances.
-    return sanitized.map((obj) => Todo.fromJSON(obj));
+    const output: Todo[] = sanitized.map((obj) => Todo.fromJSON(obj));
+    logger.debug(`Parsed sanitized raw array as array of Todo objects`, 'readTodos');
+
+    logger.debug(raw.toString());
+
+    return output;
 }

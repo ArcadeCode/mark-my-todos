@@ -5,6 +5,13 @@ export class FileNotFoundError extends Error {
     }
 }
 
+export class IdentifiantNotFoundError extends Error {
+    constructor(public reason: string) {
+        super(`Identifiant not found: ${reason}`);
+        this.name = 'IdentifiantNotFoundError';
+    }
+}
+
 export class JsonParseError extends Error {
     constructor(public reason: string) {
         super(`Json parsing error: ${reason}`);

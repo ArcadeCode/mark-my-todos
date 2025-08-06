@@ -19,14 +19,15 @@ function formatMessage(level: LogLevel, message: string, context?: string, data?
     const time = new Date().toISOString();
     let prefix = `[${time}] [${level}]`;
     if (context) prefix += ` [${context}]`;
-
     const base = `${prefix} ${message}`;
-    const formatted = applyColor(level, base);
 
     if (data !== undefined) {
-        return `${formatted}\n${kleur.gray('→')} ${kleur.white().italic(JSON.stringify(data, null, 2))}`;
+        const dataFormatted = `\n→ ${JSON.stringify(data, null, 4)}`;
+        const fullMessage = `${base}${dataFormatted}`;
+        return applyColor(level, fullMessage);
     }
-    return formatted;
+
+    return applyColor(level, base);
 }
 
 function applyColor(level: LogLevel, msg: string): string {
@@ -104,8 +105,8 @@ export async function logRequest(request: HonoRequest) {
         });
     }
 
-    // Body si présent (pour les méthodes POST, PUT, PATCH)
-    if (['POST', 'PUT', 'PATCH'].includes(request.method)) {
+    // Body si présent (pour les méthodes POST, PUT, PATCH, DELETE)
+    if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(request.method)) {
         const hasOtherData =
             Object.keys(queryParams || {}).length > 0 ||
             Object.keys(headers || {}).length > 0 ||

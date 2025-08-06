@@ -10,8 +10,10 @@ This document summarizes the current progress, pending tasks, and future improve
 |------------------------------------|-------------------|----------------------------------|
 | `GET /api/todos`                   | ✅ Completed      | Fully functional                |
 | `POST /api/todos/add`              | ✅ Completed      | Fully functional                |
-| `DELETE /api/todos/remove/{index}` | 🚧 Needs refactor | Currently not working correctly |
+| `DELETE /api/todos/remove/{index}` | ✅ Completed      | Fully functional but *          |
 | `PUT /api/todos/edit/{index}`      | ❌ Pending        | Implementation required         |
+
+> * = For now if an ID who doesn't follow UUIDv4 format, this will return a 404 but it will be best to send 402 for this.
 
 ---
 
@@ -21,7 +23,7 @@ This document summarizes the current progress, pending tasks, and future improve
 |-----------------------|--------------|
 | Get todos             | ✅ Completed |
 | Add todo              | ✅ Completed |
-| Remove todo           | ❌ Pending   |
+| Remove todo           | ✅ Completed |
 | Edit todo             | ❌ Pending   |
 
 ---

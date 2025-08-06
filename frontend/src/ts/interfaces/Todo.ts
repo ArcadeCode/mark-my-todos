@@ -1,6 +1,6 @@
 import { logger } from '../utils/logger';
 
-type TodoStatus = 'todo' | 'in-progress' | 'done';
+export type TodoStatus = 'todo' | 'in-progress' | 'done';
 
 // Interface pour les données d'entrée du constructeur
 interface TodoConstructorData {
@@ -34,8 +34,8 @@ export class Todo {
     private static readonly MAX_PROJECT_LENGTH = 100;
     private static readonly MAX_TAG_LENGTH = 50;
     private static readonly MAX_TAGS_COUNT = 20;
-    private static readonly MIN_PRIORITY = 0;
-    private static readonly MAX_PRIORITY = 10;
+    private static readonly MIN_PRIORITY = 1;
+    private static readonly MAX_PRIORITY = 5;
 
     constructor(data: TodoConstructorData) {
         // Validation et nettoyage des données
@@ -94,7 +94,7 @@ export class Todo {
         const uuidRegex =
             /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
         if (!uuidRegex.test(sanitized)) {
-            logger.error(`Invalid UUID format for id : ${sanitized}`);
+            logger.error('Invalid UUID format for id');
             throw new Error('Invalid UUID format for id');
         }
 
@@ -209,9 +209,7 @@ export class Todo {
     }
 
     private validateDueDate(due_date: unknown): string | null {
-        if (due_date === null || due_date === 'null') {
-            return null;
-        }
+        if (due_date === null) return null;
 
         if (typeof due_date !== 'string') {
             logger.error('Due date must be a string or null');
@@ -224,11 +222,7 @@ export class Todo {
         // Validation ISO 8601 date format
         const dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z?$/;
         if (!dateRegex.test(sanitized)) {
-            logger.error(
-                `Due date must be in ISO 8601 format, not : ${sanitized}`,
-                undefined,
-                this.toJSONString(),
-            );
+            logger.error('Due date must be in ISO 8601 format');
             throw new Error('Due date must be in ISO 8601 format');
         }
 
@@ -282,22 +276,20 @@ export class Todo {
     }
 
     static fromJSON(json: unknown): Todo {
-        // Check that the input is an object (and not null)
         if (typeof json !== 'object' || json === null) {
             logger.error('Invalid input: not an object');
             throw new Error('Invalid input: not an object');
         }
 
-        // Prevent prototype pollution by ensuring the constructor is not overridden
+        // Vérification contre la pollution de prototype
         if (json.constructor !== Object && json.constructor !== undefined) {
             logger.error('Invalid input: suspicious object constructor');
             throw new Error('Invalid input: suspicious object constructor');
         }
 
-        // Cast the input to a generic object with unknown values
         const obj = json as Record<string, unknown>;
 
-        // Check for prototype pollution attack vectors
+        // Vérification des propriétés dangereuses
         const dangerousProps = ['__proto__', 'constructor', 'prototype'];
         for (const prop of dangerousProps) {
             if (prop in obj) {
@@ -306,28 +298,26 @@ export class Todo {
             }
         }
 
-        // Limit the number of properties to avoid potential DoS attacks
+        // Limite le nombre de propriétés pour éviter les attaques DoS
         if (Object.keys(obj).length > 20) {
             logger.error('Too many properties in input object');
             throw new Error('Too many properties in input object');
         }
 
         try {
-            // Construct a new Todo object from the sanitized input
             return new Todo({
-                id: obj.id as string | undefined, // Optional field
-                title: obj.title as string, // Required
-                description: obj.description as string, // Required
-                project: obj.project as string, // Required
-                tags: obj.tags as string[], // Array of strings
-                priority: obj.priority as number, // Integer or float
-                due_date: obj.due_date as string | null, // Nullable date
-                status: obj.status as TodoStatus, // Enum or string representation
-                created_at: obj.created_at as string | undefined, // Optional date string
-                updated_at: obj.updated_at as string | undefined, // Optional date string
+                id: obj.id as string | undefined,
+                title: obj.title as string,
+                description: obj.description as string,
+                project: obj.project as string,
+                tags: obj.tags as string[],
+                priority: obj.priority as number,
+                due_date: obj.due_date as string | null,
+                status: obj.status as TodoStatus,
+                created_at: obj.created_at as string | undefined,
+                updated_at: obj.updated_at as string | undefined,
             });
         } catch (error) {
-            // Log and rethrow the error if Todo creation fails
             logger.error(
                 `Failed to create Todo from JSON: ${error instanceof Error ? error.message : String(error)}`,
             );

@@ -3,7 +3,8 @@ import { logRequest, logResponse, logger } from '../shared/utils/logger.ts';
 import { readTodos } from './services/todo.read.service.ts';
 import { addTodo } from './services/todo.add.service.ts';
 import { editTodo } from './services/todo.edit.service.ts';
-import { FileNotFoundError, JsonParseError } from './utils/errors';
+import { removeTodo } from './services/todo.remove.service.ts';
+import { FileNotFoundError, IdentifiantNotFoundError, JsonParseError } from './utils/errors';
 /*
 We need to ensure that body work like this :
 {
@@ -65,22 +66,31 @@ app.post('/api/todos/add', async (c) => {
 });
 
 // PUT /api/todos/edit/:id?path=...
-app.put('/api/todos/edit/:id', async (c) => {
-    const id = c.req.param('id');
-    const filePath = c.req.query('path') ?? undefined;
+//app.put('/api/todos/edit/:id', async (c) => {
+//    const id = c.req.param('id');
+//    const filePath = c.req.query('path') ?? undefined;
+//
+//    const request = await c.req.json();
+//    await editTodo(id, request.newTodoData, filePath);
+//    return c.json(readTodos(filePath), 201);
+//});
 
-    const request = await c.req.json();
-    await editTodo(id, request.newTodoData, filePath);
-    return c.json(readTodos(filePath), 201);
-});
-
-// DELETE /api/todos/remove/:id?path=...
+// DELETE /api/todos/remove/:id
 app.delete('/api/todos/remove/:id', async (c) => {
     const id = c.req.param('id');
-    const filePath = c.req.query('path') ?? undefined;
-    // Implémente ta logique ici, par exemple :
-    // await removeTodo(id, filePath);
-    return c.text(`Remove todo ${id} - not implemented`, 501);
+    const request = await c.req.json();
+    const filePath = request.path ?? c.req.query('path') ?? undefined;
+    try {
+        await removeTodo(id, filePath);
+        logResponse(200);
+        return c.text('Todo deleted', 200);
+    } catch (err) {
+        if (err instanceof IdentifiantNotFoundError) {
+            logResponse(404, err.message);
+            return c.text('Identifiant not found', 404);
+        }
+        throw err;
+    }
 });
 
 export default app;
