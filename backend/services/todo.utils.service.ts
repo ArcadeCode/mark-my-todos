@@ -19,14 +19,3 @@ export function logSelectedPath(source: string, path?: string) {
         logger.debug(`Custom path selected : ${path}`, 'readTodos', path);
     }
 }
-
-export async function isValidId(id: string, path?: string): Promise<Boolean> {
-    const todos: Todo[] = await readTodos(path);
-    for (let i = 0; i < todos.length; i++) {
-        const todo = todos[i];
-        if (todo.id == id) {
-            return true;
-        }
-    }
-    return false;
-}

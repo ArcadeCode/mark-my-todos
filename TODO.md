@@ -44,6 +44,7 @@ This document summarizes the current progress, pending tasks, and future improve
 - [ ] Refactor `Todo.ts` by decomposing it into a dedicated `./todo/` directory, splitting logic into files like `sanitize.ts`, `class.ts`, `validate.ts`, etc.
 - [ ] Implement path aliases for cleaner imports, e.g., `#shared`, `#services`
 - [ ] Optimize logo size and styling (currently too large)
+- [ ] Edited logger.xxx to read file name and put it into the log without need of a `context` attribut.
 
 ---
 

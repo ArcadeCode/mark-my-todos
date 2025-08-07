@@ -35,8 +35,23 @@ bun run build         # Build the backend
 bun run vite build    # Build the frontend
 ```
 
-## Roadmap
-In future versions this stuff will be added :
-- [ ] Custom `build.sh` script to compile both backend and frontend and produce a unified executable.
-- [ ] Search engine (using [fuse.js](https://www.fusejs.io/))
-- [ ] Project tags custom database (to add more informations about your projects into the app)
+## 🗺️ Roadmap
+Planned features and improvements for upcoming versions:
+
+### 🧱 Features
+- [ ] **[v1.1]** Add a custom `build.sh` script to compile both the backend and frontend into a single executable.
+- [ ] **[v1.1]** Integrate a lightweight search engine using [Fuse.js](https://www.fusejs.io/).
+- [ ] **[unplanned]** Implement a custom project tags database to store additional metadata about each project.
+
+---
+
+### 🛡️ Security & ⚙️ Performance
+- [ ] **[v1.0.1] Path Injection Vulnerability**  
+  Currently, the `path=...` parameter allows writing to arbitrary files, including sensitive ones such as `.lock`, `.vault`, or system files like `/etc/passwd`.  
+  **Fix:** Sanitize and strictly validate all paths before performing file operations.
+
+- [ ] **[v1.2] File Rewrite Performance Bottleneck**  
+  All services (except `/get`) currently follow the pattern:  
+  `read file → edit content → write full file`, resulting in a time complexity of **O(s)** where *s* is the size of the file.  
+  This is unacceptable for production environments, even on local services.  
+  **Fix planned in v1.2**: Refactor all affected services to support partial updates or streaming writes.

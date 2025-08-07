@@ -5,6 +5,7 @@ import { addTodo } from './services/todo.add.service.ts';
 import { editTodo } from './services/todo.edit.service.ts';
 import { removeTodo } from './services/todo.remove.service.ts';
 import { FileNotFoundError, IdentifiantNotFoundError, JsonParseError } from './utils/errors';
+import { newTodoData } from './tests/utils';
 /*
 We need to ensure that body work like this :
 {
@@ -65,15 +66,24 @@ app.post('/api/todos/add', async (c) => {
     return c.json(newTodo, 201);
 });
 
-// PUT /api/todos/edit/:id?path=...
-//app.put('/api/todos/edit/:id', async (c) => {
-//    const id = c.req.param('id');
-//    const filePath = c.req.query('path') ?? undefined;
-//
-//    const request = await c.req.json();
-//    await editTodo(id, request.newTodoData, filePath);
-//    return c.json(readTodos(filePath), 201);
-//});
+// PATCH /api/todos/edit/:id?path=...
+app.patch('/api/todos/edit/:id', async (c) => {
+    const id = c.req.param('id');
+    const request = await c.req.json();
+    const filePath = request.path ?? c.req.query('path') ?? undefined;
+    const newContent = request.newTodoData;
+    try {
+        await editTodo(id, newContent, filePath);
+        logResponse(200);
+        return c.text('Todo edited', 200);
+    } catch (err) {
+        if (err instanceof IdentifiantNotFoundError) {
+            logResponse(404, err.message);
+            return c.text('Identifier not found', 404);
+        }
+        throw err;
+    }
+});
 
 // DELETE /api/todos/remove/:id
 app.delete('/api/todos/remove/:id', async (c) => {
@@ -87,7 +97,7 @@ app.delete('/api/todos/remove/:id', async (c) => {
     } catch (err) {
         if (err instanceof IdentifiantNotFoundError) {
             logResponse(404, err.message);
-            return c.text('Identifiant not found', 404);
+            return c.text('Identifier not found', 404);
         }
         throw err;
     }
