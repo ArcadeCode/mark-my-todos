@@ -1,6 +1,6 @@
 import { logger } from '../utils/logger';
 
-type TodoStatus = 'todo' | 'in-progress' | 'done';
+export type TodoStatus = 'todo' | 'in-progress' | 'done';
 
 // Interface pour les données d'entrée du constructeur
 interface TodoConstructorData {

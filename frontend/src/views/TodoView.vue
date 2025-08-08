@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue';
 import actionModal from '@/components/todo/actionModal.vue';
-import { Todo, type TodoStatus } from '@/ts/interfaces/Todo';
+import { Todo, type TodoStatus } from '#shared/interfaces/Todo';
 
 // État réactif
 const todos = ref<Todo[]>([]);
@@ -42,11 +42,14 @@ const addTodo = async (newTodo: Todo | null) => {
         console.log('Todo abandoned');
         return;
     }
+
+    const newTodoData = newTodo.toJSON();
+
     const response = await fetch(`/api/todos/add`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            newTodo,
+            newTodoData: { ...newTodoData },
         }),
     });
     //console.log(response.body);
@@ -59,12 +62,10 @@ const removeTodo = async (index: number) => {
     expandedTodos.value.delete(todoId);
     todos.value.splice(index, 1);
 
-    const response = await fetch(`/api/todos/replace`, {
-        method: 'POST',
+    const response = await fetch(`/api/todos/remove/${todoId}`, {
+        method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            todos: todos.value,
-        }),
+        body: JSON.stringify({}),
     });
     console.log(response.body);
 };

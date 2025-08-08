@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Todo } from '../../ts/interfaces/Todo';
-import type { TodoStatus } from '../../ts/interfaces/Todo';
+import { Todo, type TodoStatus } from '#shared/interfaces/Todo';
 const name = ref('');
 const description = ref('');
 const project = ref('');
@@ -20,6 +19,8 @@ function abandonTodo(): void {
 }
 
 function createTodo(): Todo {
+    //const now = new Date(Date.now()).toISOString();
+
     const todo = new Todo({
         title: name.value,
         description: description.value,
@@ -28,6 +29,8 @@ function createTodo(): Todo {
         priority: priority.value,
         due_date: haveDueDate.value && dueDate.value ? new Date(dueDate.value).toISOString() : null,
         status: status.value,
+        //created_at: now,
+        //updated_at: now,
     });
 
     console.log('Todo créé :', todo);
@@ -85,6 +88,11 @@ function createTodo(): Todo {
 </template>
 
 <style scoped>
+label,
+h2 {
+    color: #333;
+}
+
 .form-container {
     max-width: 500px;
     margin: 2rem auto;
