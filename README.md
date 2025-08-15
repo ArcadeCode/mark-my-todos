@@ -39,8 +39,9 @@ bun run vite build    # Build the frontend
 Planned features and improvements for upcoming versions:
 
 ### 🧱 Features
+- [ ] **[v1.1]** Add new api endpoints to have a CRUD management of projects under `api/projects/`
 - [ ] **[v1.1]** Add a custom `build.sh` script to compile both the backend and frontend into a single executable.
-- [ ] **[v1.1]** Integrate a lightweight search engine using [Fuse.js](https://www.fusejs.io/).
+- [ ] **[v1.2]** Integrate a lightweight search engine using [Fuse.js](https://www.fusejs.io/).
 - [ ] **[unplanned]** Implement a custom project tags database to store additional metadata about each project.
 
 ---
@@ -50,7 +51,7 @@ Planned features and improvements for upcoming versions:
   Currently, the `path=...` parameter allows writing to arbitrary files, including sensitive ones such as `.lock`, `.vault`, or system files like `/etc/passwd`.  
   **Fix:** Sanitize and strictly validate all paths before performing file operations.
 
-- [ ] **[v1.2] File Rewrite Performance Bottleneck**  
+- [ ] **[v1.3] File Rewrite Performance Bottleneck**  
   All services (except `/get`) currently follow the pattern:  
   `read file → edit content → write full file`, resulting in a time complexity of **O(s)** where *s* is the size of the file.  
   This is unacceptable for production environments, even on local services.  

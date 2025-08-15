@@ -45,9 +45,10 @@ This document summarizes the current progress, pending tasks, and future improve
 - [ ] Implement path aliases for cleaner imports, e.g., `#shared`, `#services`
     - [X] `#shared`
     - [ ] `#services`
+- [ ] Re-organizing CSS stylesheets and put all in assets/
 - [ ] Use real RESTful architecture for all end-points and regroup all end-point around `api/todos/:id`
 - [ ] Optimize logo size and styling (currently too large)
-- [ ] Edited logger.xxx to read file name and put it into the log without need of a `context` attribut.
+- [ ] Edited `logger` to read file name and put it into the log without need of a `context` attribut.
 - [ ] Adding a `forceCreation` parameter to `add`. For now add cannot generate for nowhere a new DB.
 ---
 
