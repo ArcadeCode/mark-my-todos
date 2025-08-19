@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { Todo, type TodoStatus } from '#shared/interfaces/Todo';
+
 const name = ref('');
 const description = ref('');
 const project = ref('');
@@ -11,7 +12,33 @@ const status = ref<TodoStatus>('todo');
 
 const emit = defineEmits<{
     (e: 'todo-created', todo: Todo | null): void;
+    (e: 'todo-updated', todo: Todo | null): void;
 }>();
+
+const props = defineProps({
+    todoId: {
+        type: String,
+        required: false, // = peut être undefined
+    },
+});
+
+async function getTodoFromId(): Promise<Todo | null> {
+    try {
+        if (props.todoId) {
+            const response = await fetch('/api/todos/get');
+            let todos = await response.json();
+            const todoMap: Record<string, Todo> = Object.fromEntries(
+                todos.map((todo: Todo) => [todo.id, todo]),
+            );
+            return todoMap[props.todoId] ?? null;
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.error('Erreur lors du chargement des todos:', error);
+        return null;
+    }
+}
 
 function abandonTodo(): void {
     console.log('Emitting abandon signal');
@@ -19,8 +46,6 @@ function abandonTodo(): void {
 }
 
 function createTodo(): Todo {
-    //const now = new Date(Date.now()).toISOString();
-
     const todo = new Todo({
         title: name.value,
         description: description.value,
@@ -29,14 +54,36 @@ function createTodo(): Todo {
         priority: priority.value,
         due_date: haveDueDate.value && dueDate.value ? new Date(dueDate.value).toISOString() : null,
         status: status.value,
-        //created_at: now,
-        //updated_at: now,
     });
 
-    console.log('Todo créé :', todo);
-    emit('todo-created', todo);
-    return todo; // Doesn't not be used, it only here to calm TS compiler
+    if (props.todoId) {
+        console.log('Todo updated:', todo);
+        emit('todo-updated', todo);
+        return todo;
+    } else {
+        console.log('Todo created:', todo);
+        emit('todo-created', todo);
+        return todo;
+    }
 }
+
+onMounted(async () => {
+    if (props.todoId) {
+        const todo = await getTodoFromId();
+        if (todo) {
+            name.value = todo.title ?? '';
+            description.value = todo.description ?? '';
+            project.value = todo.project ?? '';
+            priority.value = todo.priority ?? 5;
+            status.value = todo.status ?? 'todo';
+            if (todo.due_date) {
+                haveDueDate.value = true;
+                // Conversion ISO → format local for <input type="datetime-local">
+                dueDate.value = new Date(todo.due_date).toISOString().slice(0, 16);
+            }
+        }
+    }
+});
 </script>
 
 <template>
@@ -94,13 +141,21 @@ h2 {
 }
 
 .form-container {
-    max-width: 500px;
+    max-width: 800px;
     margin: 2rem auto;
     padding: 1.5rem;
     border: 1px solid #ccc;
     border-radius: 8px;
     background-color: #fafafa;
     font-family: Arial, sans-serif;
+
+    /* Fixing position to be of top of everything */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .form-container h2 {
@@ -124,6 +179,12 @@ select {
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #333;
+    box-shadow: 0 0 0 3px rgba(51, 51, 51, 0.9);
 }
 
 button.addTodoButton {

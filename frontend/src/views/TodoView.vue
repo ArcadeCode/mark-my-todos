@@ -8,6 +8,7 @@ const todos = ref<Todo[]>([]);
 const expandedTodos = ref(new Set());
 const newTodo = reactive(Todo);
 const actionModalOpen = ref(false);
+const todoIdToEdit = ref<string | undefined>(undefined);
 
 // Méthodes utilitaires
 const formatDate = (dateString: string) => {
@@ -70,6 +71,28 @@ const removeTodo = async (index: number) => {
     console.log(response.body);
 };
 
+const editTodoButton = async (index: number) => {
+    actionModalOpen.value = true;
+    todoIdToEdit.value = todos.value[index].id;
+};
+
+const editTodo = async (index: string | undefined, newTodo: Todo | null) => {
+    if (index === undefined) {
+        console.error('Index undefined');
+        return;
+    }
+    if (newTodo === null) {
+        console.error('NewTodoIsNull');
+        return;
+    }
+    const response = await fetch(`/api/todos/edit/${index}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newTodoData: newTodo.toJSONString() }),
+    });
+    fetchTodos();
+};
+
 const fetchTodos = async () => {
     try {
         const response = await fetch('/api/todos/get');
@@ -116,6 +139,7 @@ onMounted(() => {
                         </div>
 
                         <div class="todo-actions">
+                            <button class="edit-btn" @click.stop="editTodoButton(index)">✏️</button>
                             <button class="delete-btn" @click.stop="removeTodo(index)">🗑️</button>
                         </div>
                     </div>
@@ -181,22 +205,32 @@ onMounted(() => {
             </div>
         </div>
 
-        <actionModal
-            v-if="actionModalOpen"
-            @todo-created="
-                (todo) => {
-                    actionModalOpen = false;
-                    addTodo(todo);
-                }
-            "
-        />
+        <transition name="fade">
+            <actionModal
+                v-if="actionModalOpen"
+                :todoId="todoIdToEdit"
+                @todo-created="
+                    (todo) => {
+                        actionModalOpen = false;
+                        addTodo(todo);
+                    }
+                "
+                @todo-updated="
+                    (todo) => {
+                        actionModalOpen = false;
+                        editTodo(todoIdToEdit, todo);
+                        todoIdToEdit = undefined;
+                    }
+                "
+            />
+        </transition>
     </div>
 </template>
 
 <style>
 .todo-app {
     font-family: Arial, sans-serif;
-    max-width: 800px;
+    max-width: 1600px;
     margin: 0 auto;
     padding: 20px;
 }
@@ -320,6 +354,7 @@ h1 {
     color: white;
     border: none;
     padding: 8px 12px;
+    margin-left: 2px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
@@ -327,6 +362,21 @@ h1 {
 
 .delete-btn:hover {
     background: #c82333;
+}
+
+.edit-btn {
+    background: #64717d;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    margin-left: 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.edit-btn:hover {
+    background: #88949f;
 }
 
 .todo-details {
@@ -385,5 +435,22 @@ h1 {
     opacity: 1;
     max-height: 500px;
     transform: translateY(0);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+.fade-enter-to,
+.fade-leave-from {
+    opacity: 1;
+    transform: translateY(0);
+}
+.fade-enter-active,
+.fade-leave-active {
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
 }
 </style>

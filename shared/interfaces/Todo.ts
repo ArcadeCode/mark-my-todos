@@ -103,8 +103,8 @@ export class Todo {
 
     private validateAndSanitizeTitle(title: string): string {
         if (typeof title !== 'string') {
-            logger.error('Title must be a string');
-            throw new Error('Title must be a string');
+            logger.error(`Title must be a string not ${title}`);
+            throw new Error(`Title must be a string not ${title}`);
         }
 
         const sanitized = this.sanitizeString(title);

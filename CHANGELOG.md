@@ -14,9 +14,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Added a Bun server to handle the Todo API:
   - `GET /api/todos/get`: Retrieve the JSON file.
   - `POST /api/todos/add`: Add a new todo entry.
-  - `POST /api/todos/replace`: Replace the entire JSON database.
+  - `POST /api/todos/remove/:id`: Replace an entry of the database.
+  - `PUT /api/todos/edit/:id`: Edit an entry of the database.
+- Added an interface for entries : `shared/interfaces/Todo.ts`
+- Added logger : `shared/utils/logger.ts`
 
 #### Frontend
 - Set up the Vue.js + Vite.js + TypeScript stack.
-- Implemented the `TodoView` component.
-- Added an API handler to communicate with the backend.
+- Implemented the `TodoView` view.
+- Implemented relate to `TodoView` components :
+  - `actionModal.vue` (windows to create a new Todo or editing an already created)
+- Added an API handler to communicate with the backend and a shared folder.

@@ -5,8 +5,13 @@ import { logger } from '../../shared/utils/logger';
 import { IdentifiantNotFoundError } from '../utils/errors';
 import { Todo } from '../../shared/interfaces/Todo';
 
-export async function editTodo(id: string, newContent: any, path?: string) {
+export async function editTodo(id: string, newContent: Partial<Todo>, path?: string) {
     const finalPath = resolvePath(path);
+
+    // Si newContent vient du body avec newTodoData en string JSON
+    if (typeof newContent === 'string') {
+        newContent = JSON.parse(newContent);
+    }
 
     logger.info(`Trying to edit ${id} from ${finalPath} with content : ${newContent}`, 'editTodo');
     logger.debug(`Reading DB`, 'editTodo');
@@ -25,7 +30,7 @@ export async function editTodo(id: string, newContent: any, path?: string) {
         const updatedTodo = new Todo({
             ...todoToEdit, // ancienne valeur
             ...newContent, // écrase les champs existants si présents
-        });
+        } as Todo);
 
         logger.info(`Edited element with id '${todoToEdit.id}' at index ${index}`, 'editTodo');
         todos.splice(index, 0, updatedTodo); // Pushing at the same index
