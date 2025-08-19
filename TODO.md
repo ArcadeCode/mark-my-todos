@@ -2,40 +2,12 @@
 
 This document summarizes the current progress, pending tasks, and future improvements planned for the **Mark-my-todos** application.
 
----
+## 🛡️ Security & ⚙️ Performance
+- [ ] Fix path injection vulnerability :
+    - Currently, the `path=...` parameter allows writing to arbitrary files, including sensitive ones such as `.lock`, `.vault`, or system files like `/etc/passwd`.  
+    - **Fix:** Sanitize and strictly validate all paths before performing file operations.
 
-## 🔌 Essential API Endpoints
-
-| Endpoint                           | Status            | Notes                            |
-|------------------------------------|-------------------|----------------------------------|
-| `GET /api/todos`                   | ✅ Completed      | Fully functional                |
-| `POST /api/todos/add`              | ✅ Completed      | Fully functional                |
-| `DELETE /api/todos/remove/{index}` | ✅ Completed      | Fully functional but *          |
-| `PUT /api/todos/edit/{index}`      | ✅ Completed      | Fully functional but *          |
-
-> * = For now if an ID who doesn't follow UUIDv4 format, this will return a 404 but it will be best to send 402 for this.
-
----
-
-## 🧪 Tests
-
-| Test                  | Status       |
-|-----------------------|--------------|
-| Get todos             | ✅ Completed |
-| Add todo              | ✅ Completed |
-| Remove todo           | ✅ Completed |
-| Edit todo             | ✅ Completed |
-
----
-
-## 🎨 Vue.js Interface
-
-- [X] Display todos list
-- [X] Add new todo
-- [X] Remove todo
-- [ ] Edit todo (to implement)
-
----
+- [ ] Fix $O(n)$ complexity for writing and reading db with fast JSON stream writer/reader to accomplish an $O(1)$ complexity.
 
 ## 🧹 Project Cleanup & Enhancements
 
@@ -50,6 +22,8 @@ This document summarizes the current progress, pending tasks, and future improve
 - [ ] Optimize logo size and styling (currently too large)
 - [ ] Edited `logger` to read file name and put it into the log without need of a `context` attribut.
 - [ ] Adding a `forceCreation` parameter to `add`. For now add cannot generate for nowhere a new DB.
+- [ ] Changing `<button>Ajouter le Todo</button>` to say `Éditer le Todo` when `<ActionModal/>` is in edit mode.
+- Adding i18n into the frontend.
 ---
 
 *This TODO list will be updated regularly to reflect ongoing progress and new priorities.*

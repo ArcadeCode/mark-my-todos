@@ -3,6 +3,9 @@ Custom Todo list manager using local serveur.
 
 **Mark-my-todos** is designed for users who prefer a single-page todo list. I personally used a ``todo.md`` file for all my work-related tasks, but it eventually became unmanageable. So I switched to a custom solution: a ``todo.json`` file that stores all todo elements, paired with a frontend built using Vue.js + TypeScript, and Bun as the runtime.
 
+> [!WARNING]
+> Currently, the frontend is only in French, [i18n vue.js plugging](https://vue-i18n.intlify.dev/) will be added later.
+
 ## Features
 - Single-page interface using [Vue.js](https://vuejs.org/).
 - ~~Searching motor with tag support~~ (*planned feature*).
