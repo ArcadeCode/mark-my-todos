@@ -1,11 +1,87 @@
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
+  "compilerOptions": {
+    // === BASE CONFIG ===
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    
+    // === PATHS & RESOLUTION ===
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./frontend/src/*"],
+      "#shared/*": ["./shared/*"]
     },
-    {
-      "path": "./tsconfig.app.json"
-    }
-  ]
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    
+    // === INTEROP ===
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    
+    // === TYPE CHECKING ===
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": false,
+    
+    // === EMIT ===
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": true,
+    "removeComments": false,
+    "importsNotUsedAsValues": "remove",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    
+    // === ADVANCED ===
+    "skipLibCheck": true,
+    "allowJs": false,
+    "checkJs": false,
+    
+    // === VUE SPECIFIC ===
+    "jsx": "preserve",
+    "jsxImportSource": "vue"
+  },
+  
+  "include": [
+    // Backend (Bun + Hono)
+    "backend/**/*.ts",
+    
+    // Frontend (Vite + Vue)
+    "frontend/src/**/*.ts",
+    "frontend/src/**/*.tsx",
+    "frontend/src/**/*.vue",
+    "frontend/*.config.*",
+    
+    // Shared code
+    "shared/**/*.ts",
+    
+    // Config files
+    "*.config.*",
+    "*.d.ts"
+  ],
+  
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    ".nuxt",
+    ".output",
+    ".vite"
+  ],
+  
+  // === VUE JSX SUPPORT ===
+  "types": ["node", "@types/bun"],
+  
+  // === PROJECT REFERENCES (optionnel pour de meilleures perfs) ===
+  "references": []
 }

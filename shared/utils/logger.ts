@@ -1,4 +1,4 @@
-import { HonoRequest } from 'hono';
+import type { HonoRequest } from 'hono';
 import kleur from 'kleur';
 
 type LogLevel = 'INFO' | 'WARN' | 'ERROR' | 'DEBUG';
