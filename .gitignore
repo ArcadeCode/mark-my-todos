@@ -16,8 +16,6 @@ coverage
 
 /cypress/videos/
 /cypress/screenshots/
-test_todo.json
-todo.json
 
 # Editor directories and files
 .vscode/*
@@ -30,3 +28,8 @@ todo.json
 *.sw?
 
 *.tsbuildinfo
+
+# JSON based database
+*.json
+backend/data/todo.json
+backend/data/test_todo.json
