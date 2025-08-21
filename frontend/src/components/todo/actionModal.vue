@@ -102,7 +102,7 @@ onMounted(async () => {
 
         <label>
             Projet lié :
-            <input v-model="project" type="text" />
+            <input v-model="project" type="text" autocomplete="on" />
         </label>
 
         <label>
