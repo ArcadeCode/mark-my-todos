@@ -32,3 +32,10 @@ export class InvalidIdentifier extends Error {
         this.name = 'InvalidIdentifier';
     }
 }
+
+export class UnauthorizedPathError extends Error {
+    constructor(public reason?: string) {
+        super(`Unauthorized path error: ${reason || 'potential malicious injection detected'}`);
+        this.name = 'UnauthorizedPathError';
+    }
+}
