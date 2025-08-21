@@ -3,7 +3,7 @@
 This document summarizes the current progress, pending tasks, and future improvements planned for the **Mark-my-todos** application.
 
 ## 🛡️ Security & ⚙️ Performance
-- [ ] Fix path injection vulnerability :
+- [X] Fix path injection vulnerability :
     - Currently, the `path=...` parameter allows writing to arbitrary files, including sensitive ones such as `.lock`, `.vault`, or system files like `/etc/passwd`.  
     - **Fix:** Sanitize and strictly validate all paths before performing file operations.
 
