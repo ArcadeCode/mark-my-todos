@@ -23,7 +23,8 @@ This document summarizes the current progress, pending tasks, and future improve
 - [ ] Edited `logger` to read file name and put it into the log without need of a `context` attribut.
 - [ ] Adding a `forceCreation` parameter to `add`. For now add cannot generate for nowhere a new DB.
 - [ ] Changing `<button>Ajouter le Todo</button>` to say `Éditer le Todo` when `<ActionModal/>` is in edit mode.
-- Adding i18n into the frontend.
+- [ ] Adding i18n into the frontend.
+- [ ] Adding duplicate button in Todo actions buttons to generate the same Todo data.
 ---
 
 *This TODO list will be updated regularly to reflect ongoing progress and new priorities.*
