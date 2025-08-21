@@ -1,5 +1,8 @@
 # Mark-my-todos
-Custom Todo list manager using local serveur.
+![Tests](https://github.com/ArcadeCode/mark-my-todos/actions/workflows/bun-backend-tests.yaml/badge.svg?branch=master)
+![Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4)
+![License](https://img.shields.io/github/license/ArcadeCode/mark-my-todos)
+![Bun](https://img.shields.io/badge/runtime-Bun-black?logo=bun&logoColor=white)
 
 **Mark-my-todos** is designed for users who prefer a single-page todo list. I personally used a ``todo.md`` file for all my work-related tasks, but it eventually became unmanageable. So I switched to a custom solution: a ``todo.json`` file that stores all todo elements, paired with a frontend built using Vue.js + TypeScript, and Bun as the runtime.
 

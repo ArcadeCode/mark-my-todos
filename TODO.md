@@ -12,7 +12,7 @@ This document summarizes the current progress, pending tasks, and future improve
 ## 🧹 Project Cleanup & Enhancements
 
 - [ ] Add badges from [shields.io](https://shields.io) to README for build status, coverage, etc.
-- [ ] Automate testing workflow with GitHub Actions
+- [X] Automate testing workflow with GitHub Actions
 - [ ] Refactor `Todo.ts` by decomposing it into a dedicated `./todo/` directory, splitting logic into files like `sanitize.ts`, `class.ts`, `validate.ts`, etc.
 - [ ] Implement path aliases for cleaner imports, e.g., `#shared`, `#services`
     - [X] `#shared`
